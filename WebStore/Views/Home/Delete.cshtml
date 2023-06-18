@@ -1,0 +1,27 @@
+﻿@model WebStore.Models.Item
+
+<link rel="stylesheet" href="~/css/Delete.css" />
+
+<h1>Delete Item</h1>
+
+<p>Are you sure you want to delete the following item?</p>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <td>@Model.Name</td>
+    </tr>
+    <tr>
+        <th>Price</th>
+        <td>@Model.Price</td>
+    </tr>
+    <tr>
+        <th>Group</th>
+        <td>@Model.Group</td>
+    </tr>
+</table>
+
+<form method="post" action="/Items/Delete/@Model.Id">
+    <button type="submit">Delete</button>
+    <a href="/MyItem">Cancel</a>
+</form>

@@ -1,0 +1,40 @@
+﻿@model List<WebStore.Models.Item>
+
+<link rel="stylesheet" href="~/css/MyItem.css" />
+
+<h1>My Items</h1>
+
+@if (Model.Count > 0)
+{
+    <div>
+        <a href="@Url.Action("ExportItemsToExcel", "Items")" class="btn btn-primary">Export to Excel</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Group</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Price</td>
+                    <td>@item.Group</td>
+                    <td>
+                        <a href="/Items/Edit/@item.Id">Edit</a> |
+                        <a href="/Items/Delete/@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No items found.</p>
+}

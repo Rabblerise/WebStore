@@ -1,0 +1,60 @@
+﻿@model WebStore.Models.Item
+
+<link rel="stylesheet" href="~/css/Orders.css" />
+
+<h1>Edit Item</h1>
+
+<form method="post" action="/Items/Edit/@Model.Id">
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="Name" value="@Model.Name" required>
+    </div>
+    <div>
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="Price" value="@Model.Price" required>
+    </div>
+    <div class="form-group">
+        <label for="group">Group:</label>
+        <select id="group" name="Group">
+            <option value="1">Телефоны и гаджеты</option>
+            <option value="2">Техника для дома</option>
+            <option value="3">Техника для кухни</option>
+            <option value="4">Ноутбуки компьютеры</option>
+            <option value="5">Строительство и ремонт</option>
+            <option value="6">Другие</option>
+        </select>
+    </div>
+    <button type="submit">Save</button>
+    <a href="/MyItem">Cancel</a>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (e) {
+                e.preventDefault();
+
+                var formData = {
+                    Name: $('#name').val(),
+                    Price: $('#price').val(),
+                    Group: $('#group').val()
+                };
+
+                $.ajax({
+                    url: '/Items/Edit/@Model.Id',
+                    type: 'POST',
+                    data: JSON.stringify(formData),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        window.location.href = '/MyItem';
+                    },
+                    error: function (error) {
+                        window.location.href = '/Error';
+                    }
+                });
+            });
+        });
+    </script>
+}

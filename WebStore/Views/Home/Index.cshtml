@@ -1,8 +1,126 @@
-﻿@{
+﻿@model List<WebStore.Models.Item>
+
+@{
     ViewData["Title"] = "Home Page";
+    string sortBy = ViewBag.SortBy ?? "name";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>Welcome to the WebStore</h1>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <a href="/CreateOrder" class="btn btn-primary">Create Order</a>
+}
+
+@{
+    IEnumerable<WebStore.Models.Item> sortedItems = Model;
+
+    switch (sortBy)
+    {
+        case "name":
+            sortedItems = sortedItems.OrderBy(item => item.Name);
+            break;
+        case "price":
+            sortedItems = sortedItems.OrderBy(item => item.Price);
+            break;
+        case "group":
+            sortedItems = sortedItems.OrderBy(item => ConvertGroupToInt(item.Group));
+            break;
+    }
+
+    int ConvertGroupToInt(string group)
+    {
+        switch (group)
+        {
+            case "1":
+                return 1;
+            case "2":
+                return 2;
+            case "3":
+                return 3;
+            case "4":
+                return 4;
+            case "5":
+                return 5;
+            case "6":
+                return 6;
+            default:
+                return 0; 
+        }
+    }
+}
+
+<div>
+    <h2>Items</h2>
+    <div>
+        <label>Sort by:</label>
+        <select id="sortSelect">
+            <option value="name" selected="@(sortBy == "name" ? "selected" : null)">Name</option>
+            <option value="price" selected="@(sortBy == "price" ? "selected" : null)">Price</option>
+            <option value="group" selected="@(sortBy == "group" ? "selected" : null)">Group</option>
+        </select>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Group</th>
+                <th>User</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in sortedItems)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Price</td>
+                    <td>@GetGroupLabel(item.Group)</td>
+                    <td>@item.Users?.Login</td>
+                    <td>
+                        <a href="/checkout/@item.Id" class="btn btn-primary">Order</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
+
+@functions {
+    string GetGroupLabel(string group)
+    {
+        switch (group)
+        {
+            case "1":
+                return "Телефоны и гаджеты";
+            case "2":
+                return "Техника для дома";
+            case "3":
+                return "Техника для кухни";
+            case "4":
+                return "Ноутбуки компьютеры";
+            case "5":
+                return "Строительство и ремонт";
+            case "6":
+                return "Другие";
+            default:
+                return string.Empty;
+        }
+    }
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#sortSelect').change(function () {
+                var sortBy = $(this).val();
+                var url = '';
+                if (sortBy || sortBy == "") {
+                    url = '?sortBy=' + sortBy;
+                }
+                window.location.href = url;
+            });
+        });
+    </script>
+}
